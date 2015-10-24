@@ -1,0 +1,27 @@
+{
+  "name": "segment",
+  "version": "0.0.1",
+  "description": "A little JavaScript class (without dependencies) to draw and animate SVG path strokes",
+  "main": "dist/segment.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lmgonzalves/segment.git"
+  },
+  "author": "lmgonzalves",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lmgonzalves/segment/issues"
+  },
+  "homepage": "https://github.com/lmgonzalves/segment",
+  "engine": {
+    "node": ">=0.10.22"
+  },
+  "devDependencies": {
+    "gulp": "^3.8.8",
+    "gulp-sass": "^0.7.3",
+    "gulp-autoprefixer": "1.0.0",
+    "gulp-uglify": "^0.3.1",
+    "browser-sync": "^1.3.7",
+    "gulp-rename": "~1.2.2"
+  }
+}
