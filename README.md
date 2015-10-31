@@ -4,6 +4,8 @@ A little JavaScript class (without dependencies) to draw and animate SVG path st
 
 See the [DEMO](http://lmgonzalves.github.io/segment).
 
+Read [this article](http://lmgonzalves.github.io/2015/10/26/animating-svg-path-segments/) to understand how it works.
+
 ## Basic usage
 
 **HTML**
