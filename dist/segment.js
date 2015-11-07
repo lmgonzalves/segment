@@ -1,6 +1,6 @@
 /**
  * segment - A little JavaScript class (without dependencies) to draw and animate SVG path strokes
- * @version v0.0.3
+ * @version v0.0.4
  * @link https://github.com/lmgonzalves/segment
  * @license MIT
  */
@@ -18,9 +18,9 @@ function Segment(path, begin, end) {
 Segment.prototype = {
     draw : function(begin, end, duration, options){
         if(duration){
-            var delay = options.hasOwnProperty('delay') ? parseFloat(options.delay) * 1000 : 0,
-                easing = options.hasOwnProperty('easing') ? options.easing : null,
-                callback = options.hasOwnProperty('callback') ? options.callback : null,
+            var delay = options && options.hasOwnProperty('delay') ? parseFloat(options.delay) * 1000 : 0,
+                easing = options && options.hasOwnProperty('easing') ? options.easing : null,
+                callback = options && options.hasOwnProperty('callback') ? options.callback : null,
                 that = this;
 
             this.stop();
