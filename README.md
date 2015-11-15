@@ -10,7 +10,7 @@ Read [this article](http://lmgonzalves.github.io/2015/10/26/animating-svg-path-s
 
 **HTML**
 
-Add the segment script (less than 2kb), and define a `path` somewhere.
+Add the segment script, and define a `path` somewhere.
 
 ```html
 <script src="/dist/segment.min.js"></script>
@@ -48,7 +48,7 @@ The `Segment` constructor asks for 3 parameters:
 |`duration`  | float    | 0       | Duration (in seconds) of the animation. |
 |`options`   | object   | null    | Options for animation in object notation. |
 
-Note that `begin` and `end` values can be written in any of these ways:
+Note that `begin` and `end` can be negative values and can be written in any of these ways:
 
 - floatValue
 - percent
@@ -61,6 +61,7 @@ Note that `begin` and `end` values can be written in any of these ways:
 |------------|----------|---------|-------------|
 |`delay`     | float    | 0       | Waiting time (in seconds) to start drawing. |
 |`easing`    | function | linear  | Easing function (normalized). I highly recommend [d3-ease](https://github.com/d3/d3-ease). |
+|`circular`  | boolean  | false   | If `true`, when the stroke reaches the end of the path it will resume at the beginning. The same applies in the opposite direction. |
 |`callback`  | function | null    | Function to call when the animation is done. |
 
 **Example**
@@ -74,7 +75,7 @@ function done() {
     alert("Done!");
 }
 
-segment.draw("25%", "75% - 10", 1, {delay: 0.5, easing: cubicIn, callback: done});
+segment.draw("-25%", "75% - 10", 1, {delay: 0.5, easing: cubicIn, circular: true, callback: done});
 ```
 
 ## Animating with another library

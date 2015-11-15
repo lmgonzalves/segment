@@ -1,6 +1,6 @@
 /**
  * segment - A little JavaScript class (without dependencies) to draw and animate SVG path strokes
- * @version v0.0.4
+ * @version v0.1.0
  * @link https://github.com/lmgonzalves/segment
  * @license MIT
  */
@@ -11,6 +11,7 @@ function Segment(path, begin, end) {
     this.path.style.strokeDashoffset = this.length * 2;
     this.begin = typeof begin !== 'undefined' ? this.valueOf(begin) : 0;
     this.end = typeof end !== 'undefined' ? this.valueOf(end) : this.length;
+    this.circular = false;
     this.timer = null;
     this.draw(this.begin, this.end);
 }
@@ -22,6 +23,8 @@ Segment.prototype = {
                 easing = options && options.hasOwnProperty('easing') ? options.easing : null,
                 callback = options && options.hasOwnProperty('callback') ? options.callback : null,
                 that = this;
+
+            this.circular = options && options.hasOwnProperty('circular') ? options.circular : false;
 
             this.stop();
             if(delay) {
@@ -59,22 +62,23 @@ Segment.prototype = {
                 that.begin = initBegin + (finalBegin - initBegin) * t;
                 that.end = initEnd + (finalEnd - initEnd) * t;
 
-                if(that.begin < 0) {
-                    that.begin = 0;
-                }
+                that.begin = that.begin < 0 && !that.circular ? 0 : that.begin;
+                that.begin = that.begin > that.length && !that.circular ? that.length : that.begin;
+                that.end = that.end < 0 && !that.circular ? 0 : that.end;
+                that.end = that.end > that.length && !that.circular ? that.length : that.end;
 
-                if(that.end > that.length) {
-                    that.end = that.length;
-                }
-
-                if(that.begin < that.end) {
+                if(that.end - that.begin < that.length && that.end - that.begin > 0){
                     that.draw(that.begin, that.end);
                 }else{
-                    that.draw(that.begin + (that.end - that.begin), that.end - (that.end - that.begin));
+                    if(that.circular && that.end - that.begin > that.length){
+                        that.draw(0, that.length);
+                    }else{
+                        that.draw(that.begin + (that.end - that.begin), that.end - (that.end - that.begin));
+                    }
                 }
 
                 if(time > 1 && typeof callback === 'function'){
-                    return callback.call(that.context);
+                    return callback.call(that);
                 }
             })();
         }else{
@@ -85,6 +89,22 @@ Segment.prototype = {
     strokeDasharray : function(begin, end){
         this.begin = this.valueOf(begin);
         this.end = this.valueOf(end);
+        if(this.circular) {
+            var division = parseInt(this.begin / parseInt(this.length)) > parseInt(this.end / parseInt(this.length))
+                ? parseInt(this.begin / parseInt(this.length)) : parseInt(this.end / parseInt(this.length));
+            if (division > 0) {
+                this.begin = this.begin - this.length * division;
+                this.end = this.end - this.length * division;
+            }
+        }
+        if(this.end > this.length){
+            var plus = this.end - this.length;
+            return [this.length, this.length, plus, this.begin - plus, this.end - this.begin].join(' ');
+        }
+        if(this.begin < 0){
+            var minus = this.length + this.begin;
+            return [this.length, this.length + this.begin, this.end - this.begin, minus - this.end, this.length].join(' ');
+        }
         return [this.length, this.length + this.begin, this.end - this.begin].join(' ');
     },
 
@@ -98,7 +118,7 @@ Segment.prototype = {
                     val = this.percent(arr[0]) + parseFloat(arr[1]);
                 }else if(~input.indexOf('-')){
                     arr = input.split('-');
-                    val = this.percent(arr[0]) - parseFloat(arr[1]);
+                    val = arr[0] ? this.percent(arr[0]) - parseFloat(arr[1]) : -this.percent(arr[1]);
                 }else{
                     val = this.percent(input);
                 }
