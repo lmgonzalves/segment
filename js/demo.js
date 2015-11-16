@@ -18,7 +18,7 @@
 
     random.onclick = function(){
         randomBegin = getRandomInt(0, length);
-        randomEnd = getRandomInt(randomBegin, length);
+        randomEnd = getRandomInt(0, length);
         segment.draw(randomBegin, randomEnd, duration.value, {easing: ease.ease(easing.value)});
     };
 
