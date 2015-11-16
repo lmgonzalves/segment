@@ -1,6 +1,6 @@
 /**
  * segment - A little JavaScript class (without dependencies) to draw and animate SVG path strokes
- * @version v0.1.0
+ * @version v0.1.1
  * @link https://github.com/lmgonzalves/segment
  * @license MIT
  */
@@ -90,9 +90,9 @@ Segment.prototype = {
         this.begin = this.valueOf(begin);
         this.end = this.valueOf(end);
         if(this.circular) {
-            var division = parseInt(this.begin / parseInt(this.length)) > parseInt(this.end / parseInt(this.length))
+            var division = this.begin > this.end || (this.begin < 0 && this.begin < this.length * -1)
                 ? parseInt(this.begin / parseInt(this.length)) : parseInt(this.end / parseInt(this.length));
-            if (division > 0) {
+            if (division !== 0) {
                 this.begin = this.begin - this.length * division;
                 this.end = this.end - this.length * division;
             }
@@ -103,7 +103,11 @@ Segment.prototype = {
         }
         if(this.begin < 0){
             var minus = this.length + this.begin;
-            return [this.length, this.length + this.begin, this.end - this.begin, minus - this.end, this.length].join(' ');
+            if(this.end < 0){
+                return [this.length, this.length + this.begin, this.end - this.begin, minus - this.end, this.end - this.begin, this.length].join(' ');
+            }else{
+                return [this.length, this.length + this.begin, this.end - this.begin, minus - this.end, this.length].join(' ');
+            }
         }
         return [this.length, this.length + this.begin, this.end - this.begin].join(' ');
     },
