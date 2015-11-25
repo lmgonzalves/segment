@@ -36,7 +36,6 @@ Segment.prototype = {
             }
 
             var startTime = new Date(),
-                rate = 1000/60,
                 initBegin = this.begin,
                 initEnd = this.end,
                 finalBegin = this.valueOf(begin),
@@ -56,7 +55,7 @@ Segment.prototype = {
                     that.stop();
                     t = 1;
                 }else{
-                    that.timer = setTimeout(calc, rate);
+                    that.timer = requestAnimationFrame(calc);
                 }
 
                 that.begin = initBegin + (finalBegin - initBegin) * t;
@@ -132,7 +131,7 @@ Segment.prototype = {
     },
 
     stop : function(){
-        clearTimeout(this.timer);
+        cancelAnimationFrame(this.timer);
         this.timer = null;
     },
 
