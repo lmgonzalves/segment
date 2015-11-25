@@ -80,7 +80,7 @@ Segment.prototype = {
                     that.stop();
                     t = 1;
                 }else{
-                    that.timer = requestAnimationFrame(calc);
+                    that.timer = window.requestAnimationFrame(calc);
                 }
 
                 that.begin = initBegin + (finalBegin - initBegin) * t;
@@ -156,7 +156,7 @@ Segment.prototype = {
     },
 
     stop : function(){
-        cancelAnimationFrame(this.timer);
+        window.cancelAnimationFrame(this.timer);
         this.timer = null;
     },
 
