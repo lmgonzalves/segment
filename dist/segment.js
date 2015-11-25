@@ -77,7 +77,6 @@ Segment.prototype = {
                 }
 
                 if(time > 1){
-                    that.stop();
                     t = 1;
                 }else{
                     that.timer = window.requestAnimationFrame(calc);
