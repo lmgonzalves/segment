@@ -1,0 +1,8 @@
+node_modules/
+.idea/
+css/
+js/
+scss/
+index.html
+favicon.ico
+gulpfile.js
