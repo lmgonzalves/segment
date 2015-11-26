@@ -3,7 +3,8 @@ var gulp = require('gulp'),
     sass = require('gulp-sass'),
     prefix = require('gulp-autoprefixer'),
     uglify = require('gulp-uglify'),
-    rename = require('gulp-rename');
+    rename = require('gulp-rename'),
+    insert = require('gulp-insert');
 
 /**
  * Static server
@@ -41,7 +42,10 @@ gulp.task('sass', function () {
 gulp.task('compress', function() {
     return gulp.src('dist/segment.js')
         .pipe(uglify({preserveComments: 'some'}))
-        .pipe(rename({extname: '.min.js'}))
+        .pipe(rename({suffix: '.min'}))
+        .pipe(gulp.dest('dist'))
+        .pipe(rename({basename: 'segment.node'}))
+        .pipe(insert.append('module.exports=Segment;'))
         .pipe(gulp.dest('dist'))
         .pipe(browserSync.reload({stream:true}));
 });

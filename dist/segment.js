@@ -1,6 +1,6 @@
 /**
  * segment - A little JavaScript class (without dependencies) to draw and animate SVG path strokes
- * @version v0.1.1
+ * @version v0.1.2
  * @link https://github.com/lmgonzalves/segment
  * @license MIT
  */
