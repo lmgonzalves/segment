@@ -9,7 +9,7 @@ var gulp = require('gulp'),
 /**
  * Static server
  */
-gulp.task('serve', ['sass', 'compress'], function() {
+gulp.task('serve', ['sass', 'dist'], function(){
     browserSync.init({
         server: {
             baseDir: "./"
@@ -17,14 +17,14 @@ gulp.task('serve', ['sass', 'compress'], function() {
     });
 
     gulp.watch('scss/*.scss', ['sass']);
-    gulp.watch('dist/segment.js', ['compress']);
+    gulp.watch('dist/segment.js', ['dist']);
     gulp.watch(['index.html', 'js/*']).on('change', browserSync.reload);
 });
 
 /**
  * Compile files from scss into css
  */
-gulp.task('sass', function () {
+gulp.task('sass', function(){
     return gulp.src('scss/demo.scss')
         .pipe(sass({
             outputStyle: 'compressed',
@@ -37,15 +37,17 @@ gulp.task('sass', function () {
 });
 
 /**
- * Create min version
+ * Create distributable versions
  */
-gulp.task('compress', function() {
+gulp.task('dist', function(){
+    gulp.src('dist/segment.js')
+        .pipe(rename({suffix: '.node'}))
+        .pipe(insert.append('\n\nmodule.exports = Segment;'))
+        .pipe(gulp.dest('dist'));
+
     return gulp.src('dist/segment.js')
         .pipe(uglify({preserveComments: 'some'}))
         .pipe(rename({suffix: '.min'}))
-        .pipe(gulp.dest('dist'))
-        .pipe(rename({basename: 'segment.node'}))
-        .pipe(insert.append('module.exports=Segment;'))
         .pipe(gulp.dest('dist'))
         .pipe(browserSync.reload({stream:true}));
 });

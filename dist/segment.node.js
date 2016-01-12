@@ -1,7 +1,167 @@
 /**
  * segment - A little JavaScript class (without dependencies) to draw and animate SVG path strokes
- * @version v0.1.2
+ * @version v1.0
  * @link https://github.com/lmgonzalves/segment
  * @license MIT
  */
-function Segment(e,t,i){this.path=e,this.length=e.getTotalLength(),this.path.style.strokeDashoffset=2*this.length,this.begin="undefined"!=typeof t?this.valueOf(t):0,this.end="undefined"!=typeof i?this.valueOf(i):this.length,this.circular=!1,this.timer=null,this.draw(this.begin,this.end)}!function(){for(var e=0,t=["ms","moz","webkit","o"],i=0;i<t.length&&!window.requestAnimationFrame;++i)window.requestAnimationFrame=window[t[i]+"RequestAnimationFrame"],window.cancelAnimationFrame=window[t[i]+"CancelAnimationFrame"]||window[t[i]+"CancelRequestAnimationFrame"];window.requestAnimationFrame||(window.requestAnimationFrame=function(t){var i=(new Date).getTime(),n=Math.max(0,16-(i-e)),s=window.setTimeout(function(){t(i+n)},n);return e=i+n,s}),window.cancelAnimationFrame||(window.cancelAnimationFrame=function(e){clearTimeout(e)})}(),Segment.prototype={draw:function(e,t,i,n){if(i){var s=n&&n.hasOwnProperty("delay")?1e3*parseFloat(n.delay):0,h=n&&n.hasOwnProperty("easing")?n.easing:null,a=n&&n.hasOwnProperty("callback")?n.callback:null,r=this;if(this.circular=n&&n.hasOwnProperty("circular")?n.circular:!1,this.stop(),s)return delete n.delay,this.timer=setTimeout(function(){r.draw(e,t,i,n)},s),this.timer;var l=new Date,o=this.begin,g=this.end,d=this.valueOf(e),c=this.valueOf(t);!function u(){var e=new Date,t=(e-l)/1e3,n=t/parseFloat(i),s=n;return"function"==typeof h&&(s=h(s)),n>1?s=1:r.timer=window.requestAnimationFrame(u),r.begin=o+(d-o)*s,r.end=g+(c-g)*s,r.begin=r.begin<0&&!r.circular?0:r.begin,r.begin=r.begin>r.length&&!r.circular?r.length:r.begin,r.end=r.end<0&&!r.circular?0:r.end,r.end=r.end>r.length&&!r.circular?r.length:r.end,r.end-r.begin<r.length&&r.end-r.begin>0?r.draw(r.begin,r.end):r.circular&&r.end-r.begin>r.length?r.draw(0,r.length):r.draw(r.begin+(r.end-r.begin),r.end-(r.end-r.begin)),n>1&&"function"==typeof a?a.call(r):void 0}()}else this.path.style.strokeDasharray=this.strokeDasharray(e,t)},strokeDasharray:function(e,t){if(this.begin=this.valueOf(e),this.end=this.valueOf(t),this.circular){var i=this.begin>this.end||this.begin<0&&this.begin<-1*this.length?parseInt(this.begin/parseInt(this.length)):parseInt(this.end/parseInt(this.length));0!==i&&(this.begin=this.begin-this.length*i,this.end=this.end-this.length*i)}if(this.end>this.length){var n=this.end-this.length;return[this.length,this.length,n,this.begin-n,this.end-this.begin].join(" ")}if(this.begin<0){var s=this.length+this.begin;return this.end<0?[this.length,this.length+this.begin,this.end-this.begin,s-this.end,this.end-this.begin,this.length].join(" "):[this.length,this.length+this.begin,this.end-this.begin,s-this.end,this.length].join(" ")}return[this.length,this.length+this.begin,this.end-this.begin].join(" ")},valueOf:function(e){var t=parseFloat(e);if(("string"==typeof e||e instanceof String)&&~e.indexOf("%")){var i;~e.indexOf("+")?(i=e.split("+"),t=this.percent(i[0])+parseFloat(i[1])):~e.indexOf("-")?(i=e.split("-"),t=i[0]?this.percent(i[0])-parseFloat(i[1]):-this.percent(i[1])):t=this.percent(e)}return t},stop:function(){window.cancelAnimationFrame(this.timer),this.timer=null},percent:function(e){return parseFloat(e)/100*this.length}};module.exports=Segment;
+
+(function(){
+    var lastTime = 0;
+    var vendors = ['ms', 'moz', 'webkit', 'o'];
+    for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x){
+        window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
+        window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame'] 
+                                   || window[vendors[x]+'CancelRequestAnimationFrame'];
+    }
+ 
+    if(!window.requestAnimationFrame)
+        window.requestAnimationFrame = function(callback, element){
+            var currTime = new Date().getTime();
+            var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+            var id = window.setTimeout(function(){ callback(currTime + timeToCall); },
+              timeToCall);
+            lastTime = currTime + timeToCall;
+            return id;
+        };
+ 
+    if(!window.cancelAnimationFrame)
+        window.cancelAnimationFrame = function(id){
+            clearTimeout(id);
+        };
+}());
+
+function Segment(path, begin, end){
+    this.path = path;
+    this.length = path.getTotalLength();
+    this.path.style.strokeDashoffset = this.length * 2;
+    this.begin = typeof begin !== 'undefined' ? this.valueOf(begin) : 0;
+    this.end = typeof end !== 'undefined' ? this.valueOf(end) : this.length;
+    this.circular = false;
+    this.timer = null;
+    this.draw(this.begin, this.end);
+}
+
+Segment.prototype = {
+    draw : function(begin, end, duration, options){
+        if(duration){
+            var delay = options && options.hasOwnProperty('delay') ? parseFloat(options.delay) * 1000 : 0,
+                easing = options && options.hasOwnProperty('easing') ? options.easing : null,
+                callback = options && options.hasOwnProperty('callback') ? options.callback : null,
+                that = this;
+
+            this.circular = options && options.hasOwnProperty('circular') ? options.circular : false;
+
+            this.stop();
+            if(delay){
+                delete options.delay;
+                this.timer = setTimeout(function(){
+                    that.draw(begin, end, duration, options);
+                }, delay);
+                return this.timer;
+            }
+
+            var startTime = new Date(),
+                initBegin = this.begin,
+                initEnd = this.end,
+                finalBegin = this.valueOf(begin),
+                finalEnd = this.valueOf(end);
+
+            (function calc(){
+                var now = new Date(),
+                    elapsed = (now-startTime)/1000,
+                    time = (elapsed/parseFloat(duration)),
+                    t = time;
+
+                if(typeof easing === 'function'){
+                    t = easing(t);
+                }
+
+                if(time > 1){
+                    t = 1;
+                }else{
+                    that.timer = window.requestAnimationFrame(calc);
+                }
+
+                that.begin = initBegin + (finalBegin - initBegin) * t;
+                that.end = initEnd + (finalEnd - initEnd) * t;
+
+                that.begin = that.begin < 0 && !that.circular ? 0 : that.begin;
+                that.begin = that.begin > that.length && !that.circular ? that.length : that.begin;
+                that.end = that.end < 0 && !that.circular ? 0 : that.end;
+                that.end = that.end > that.length && !that.circular ? that.length : that.end;
+
+                if(that.end - that.begin < that.length && that.end - that.begin > 0){
+                    that.draw(that.begin, that.end);
+                }else{
+                    if(that.circular && that.end - that.begin > that.length){
+                        that.draw(0, that.length);
+                    }else{
+                        that.draw(that.begin + (that.end - that.begin), that.end - (that.end - that.begin));
+                    }
+                }
+
+                if(time > 1 && typeof callback === 'function'){
+                    return callback.call(that);
+                }
+            })();
+        }else{
+            this.path.style.strokeDasharray = this.strokeDasharray(begin, end);
+        }
+    },
+
+    strokeDasharray : function(begin, end){
+        this.begin = this.valueOf(begin);
+        this.end = this.valueOf(end);
+        if(this.circular){
+            var division = this.begin > this.end || (this.begin < 0 && this.begin < this.length * -1)
+                ? parseInt(this.begin / parseInt(this.length)) : parseInt(this.end / parseInt(this.length));
+            if(division !== 0){
+                this.begin = this.begin - this.length * division;
+                this.end = this.end - this.length * division;
+            }
+        }
+        if(this.end > this.length){
+            var plus = this.end - this.length;
+            return [this.length, this.length, plus, this.begin - plus, this.end - this.begin].join(' ');
+        }
+        if(this.begin < 0){
+            var minus = this.length + this.begin;
+            if(this.end < 0){
+                return [this.length, this.length + this.begin, this.end - this.begin, minus - this.end, this.end - this.begin, this.length].join(' ');
+            }else{
+                return [this.length, this.length + this.begin, this.end - this.begin, minus - this.end, this.length].join(' ');
+            }
+        }
+        return [this.length, this.length + this.begin, this.end - this.begin].join(' ');
+    },
+
+    valueOf: function(input){
+        var val = parseFloat(input);
+        if(typeof input === 'string' || input instanceof String){
+            if(~input.indexOf('%')){
+                var arr;
+                if(~input.indexOf('+')){
+                    arr = input.split('+');
+                    val = this.percent(arr[0]) + parseFloat(arr[1]);
+                }else if(~input.indexOf('-')){
+                    arr = input.split('-');
+                    val = arr[0] ? this.percent(arr[0]) - parseFloat(arr[1]) : -this.percent(arr[1]);
+                }else{
+                    val = this.percent(input);
+                }
+            }
+        }
+        return val;
+    },
+
+    stop : function(){
+        window.cancelAnimationFrame(this.timer);
+        this.timer = null;
+    },
+
+    percent : function(value){
+        return parseFloat(value) / 100 * this.length;
+    }
+};
+
+module.exports = Segment;

@@ -1,36 +1,36 @@
 /**
  * segment - A little JavaScript class (without dependencies) to draw and animate SVG path strokes
- * @version v0.1.2
+ * @version v1.0
  * @link https://github.com/lmgonzalves/segment
  * @license MIT
  */
 
-(function() {
+(function(){
     var lastTime = 0;
     var vendors = ['ms', 'moz', 'webkit', 'o'];
-    for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+    for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x){
         window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
         window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame'] 
                                    || window[vendors[x]+'CancelRequestAnimationFrame'];
     }
  
-    if (!window.requestAnimationFrame)
-        window.requestAnimationFrame = function(callback, element) {
+    if(!window.requestAnimationFrame)
+        window.requestAnimationFrame = function(callback, element){
             var currTime = new Date().getTime();
             var timeToCall = Math.max(0, 16 - (currTime - lastTime));
-            var id = window.setTimeout(function() { callback(currTime + timeToCall); }, 
+            var id = window.setTimeout(function(){ callback(currTime + timeToCall); },
               timeToCall);
             lastTime = currTime + timeToCall;
             return id;
         };
  
-    if (!window.cancelAnimationFrame)
-        window.cancelAnimationFrame = function(id) {
+    if(!window.cancelAnimationFrame)
+        window.cancelAnimationFrame = function(id){
             clearTimeout(id);
         };
 }());
 
-function Segment(path, begin, end) {
+function Segment(path, begin, end){
     this.path = path;
     this.length = path.getTotalLength();
     this.path.style.strokeDashoffset = this.length * 2;
@@ -52,9 +52,9 @@ Segment.prototype = {
             this.circular = options && options.hasOwnProperty('circular') ? options.circular : false;
 
             this.stop();
-            if(delay) {
+            if(delay){
                 delete options.delay;
-                this.timer = setTimeout(function () {
+                this.timer = setTimeout(function(){
                     that.draw(begin, end, duration, options);
                 }, delay);
                 return this.timer;
@@ -72,7 +72,7 @@ Segment.prototype = {
                     time = (elapsed/parseFloat(duration)),
                     t = time;
 
-                if(typeof easing === 'function') {
+                if(typeof easing === 'function'){
                     t = easing(t);
                 }
 
@@ -112,10 +112,10 @@ Segment.prototype = {
     strokeDasharray : function(begin, end){
         this.begin = this.valueOf(begin);
         this.end = this.valueOf(end);
-        if(this.circular) {
+        if(this.circular){
             var division = this.begin > this.end || (this.begin < 0 && this.begin < this.length * -1)
                 ? parseInt(this.begin / parseInt(this.length)) : parseInt(this.end / parseInt(this.length));
-            if (division !== 0) {
+            if(division !== 0){
                 this.begin = this.begin - this.length * division;
                 this.end = this.end - this.length * division;
             }

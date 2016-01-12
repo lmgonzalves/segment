@@ -31,6 +31,12 @@ var myPath = document.getElementById("my-path"),
 segment.draw("25%", "75% - 10", 1);
 ```
 
+## Install with NPM
+
+```
+npm install segment-js
+```
+
 ## Constructor
 
 The `Segment` constructor asks for 3 parameters:
