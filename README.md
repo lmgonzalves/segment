@@ -39,11 +39,12 @@ npm install segment-js
 
 ## Constructor
 
-The `Segment` constructor asks for 3 parameters:
+The `Segment` constructor asks for 4 parameters:
 
 - path: DOM element to draw.
-- begin (optional, default 0): Length to start drawing the stroke.
-- end (optional, default 100%): Length to finish drawing the stroke.
+- begin (optional, default `0`): Length to start drawing the stroke.
+- end (optional, default `100%`): Length to finish drawing the stroke.
+- circular (optional, default `false`): Allow `begin` and `end` values less than 0 and greater than 100%.
 
 ## Method `draw(begin, end, duration, options)`
 

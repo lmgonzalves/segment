@@ -1,6 +1,6 @@
 /**
  * segment - A little JavaScript class (without dependencies) to draw and animate SVG path strokes
- * @version v1.0.2
+ * @version v1.0.3
  * @link https://github.com/lmgonzalves/segment
  * @license MIT
  */
@@ -30,26 +30,25 @@
         };
 }());
 
-function Segment(path, begin, end){
+function Segment(path, begin, end, circular){
     this.path = path;
     this.length = path.getTotalLength();
     this.path.style.strokeDashoffset = this.length * 2;
     this.begin = typeof begin !== 'undefined' ? this.valueOf(begin) : 0;
     this.end = typeof end !== 'undefined' ? this.valueOf(end) : this.length;
-    this.circular = false;
+    this.circular = circular !== 'undefined' ? circular : false;
     this.timer = null;
-    this.draw(this.begin, this.end);
+    this.draw(this.begin, this.end, 0, {circular: this.circular});
 }
 
 Segment.prototype = {
     draw : function(begin, end, duration, options){
+        this.circular = options && options.hasOwnProperty('circular') ? options.circular : false;
         if(duration){
             var delay = options && options.hasOwnProperty('delay') ? parseFloat(options.delay) * 1000 : 0,
                 easing = options && options.hasOwnProperty('easing') ? options.easing : null,
                 callback = options && options.hasOwnProperty('callback') ? options.callback : null,
                 that = this;
-
-            this.circular = options && options.hasOwnProperty('circular') ? options.circular : false;
 
             this.stop();
             if(delay){
@@ -91,12 +90,12 @@ Segment.prototype = {
                 that.end = that.end > that.length && !that.circular ? that.length : that.end;
 
                 if(that.end - that.begin < that.length && that.end - that.begin > 0){
-                    that.draw(that.begin, that.end);
+                    that.draw(that.begin, that.end, 0, {circular: options.circular});
                 }else{
                     if(that.circular && that.end - that.begin > that.length){
-                        that.draw(0, that.length);
+                        that.draw(0, that.length, 0, {circular: options.circular});
                     }else{
-                        that.draw(that.begin + (that.end - that.begin), that.end - (that.end - that.begin));
+                        that.draw(that.begin + (that.end - that.begin), that.end - (that.end - that.begin), 0, {circular: options.circular});
                     }
                 }
 
