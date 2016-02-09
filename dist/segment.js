@@ -1,6 +1,6 @@
 /**
  * segment - A little JavaScript class (without dependencies) to draw and animate SVG path strokes
- * @version v1.0.3
+ * @version v1.0.4
  * @link https://github.com/lmgonzalves/segment
  * @license MIT
  */
@@ -159,6 +159,7 @@ Segment.prototype = {
 
     stop : function(){
         window.cancelAnimationFrame(this.timer);
+        clearTimeout(this.timer);
         this.timer = null;
     },
 
