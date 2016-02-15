@@ -1,34 +1,9 @@
 /**
  * segment - A little JavaScript class (without dependencies) to draw and animate SVG path strokes
- * @version v1.0.4
+ * @version v1.0.5
  * @link https://github.com/lmgonzalves/segment
  * @license MIT
  */
-
-(function(){
-    var lastTime = 0;
-    var vendors = ['ms', 'moz', 'webkit', 'o'];
-    for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x){
-        window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
-        window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame'] 
-                                   || window[vendors[x]+'CancelRequestAnimationFrame'];
-    }
- 
-    if(!window.requestAnimationFrame)
-        window.requestAnimationFrame = function(callback, element){
-            var currTime = new Date().getTime();
-            var timeToCall = Math.max(0, 16 - (currTime - lastTime));
-            var id = window.setTimeout(function(){ callback(currTime + timeToCall); },
-              timeToCall);
-            lastTime = currTime + timeToCall;
-            return id;
-        };
- 
-    if(!window.cancelAnimationFrame)
-        window.cancelAnimationFrame = function(id){
-            clearTimeout(id);
-        };
-}());
 
 function Segment(path, begin, end, circular){
     this.path = path;
@@ -60,6 +35,7 @@ Segment.prototype = {
             }
 
             var startTime = new Date(),
+                rate = 1000/60,
                 initBegin = this.begin,
                 initEnd = this.end,
                 finalBegin = this.valueOf(begin),
@@ -78,7 +54,7 @@ Segment.prototype = {
                 if(time > 1){
                     t = 1;
                 }else{
-                    that.timer = window.requestAnimationFrame(calc);
+                    that.timer = setTimeout(calc, rate);
                 }
 
                 that.begin = initBegin + (finalBegin - initBegin) * t;
@@ -158,7 +134,6 @@ Segment.prototype = {
     },
 
     stop : function(){
-        window.cancelAnimationFrame(this.timer);
         clearTimeout(this.timer);
         this.timer = null;
     },
