@@ -1,9 +1,34 @@
 /**
  * segment - A little JavaScript class (without dependencies) to draw and animate SVG path strokes
- * @version v1.0.6
+ * @version v1.0.7
  * @link https://github.com/lmgonzalves/segment
  * @license MIT
  */
+
+(function(){
+    var lastTime = 0;
+    var vendors = ['ms', 'moz', 'webkit', 'o'];
+    for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x){
+        window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
+        window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame']
+        || window[vendors[x]+'CancelRequestAnimationFrame'];
+    }
+
+    if(!window.requestAnimationFrame)
+        window.requestAnimationFrame = function(callback, element){
+            var currTime = new Date().getTime();
+            var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+            var id = window.setTimeout(function(){ callback(currTime + timeToCall); },
+                timeToCall);
+            lastTime = currTime + timeToCall;
+            return id;
+        };
+
+    if(!window.cancelAnimationFrame)
+        window.cancelAnimationFrame = function(id){
+            clearTimeout(id);
+        };
+}());
 
 function Segment(path, begin, end, circular){
     this.path = path;
@@ -13,11 +38,12 @@ function Segment(path, begin, end, circular){
     this.end = typeof end !== 'undefined' ? this.valueOf(end) : this.length;
     this.circular = circular !== 'undefined' ? circular : false;
     this.timer = null;
+    this.animationTimer = null;
     this.draw(this.begin, this.end, 0, {circular: this.circular});
 }
 
 Segment.prototype = {
-    draw : function(begin, end, duration, options){
+    draw: function(begin, end, duration, options){
         this.circular = options && options.hasOwnProperty('circular') ? options.circular : false;
         if(duration){
             var delay = options && options.hasOwnProperty('delay') ? parseFloat(options.delay) * 1000 : 0,
@@ -35,7 +61,6 @@ Segment.prototype = {
             }
 
             var startTime = new Date(),
-                rate = 1000/60,
                 initBegin = this.begin,
                 initEnd = this.end,
                 finalBegin = this.valueOf(begin),
@@ -54,7 +79,7 @@ Segment.prototype = {
                 if(time > 1){
                     t = 1;
                 }else{
-                    that.timer = setTimeout(calc, rate);
+                    that.animationTimer = window.requestAnimationFrame(calc);
                 }
 
                 that.begin = initBegin + (finalBegin - initBegin) * t;
@@ -84,7 +109,7 @@ Segment.prototype = {
         }
     },
 
-    strokeDasharray : function(begin, end){
+    strokeDasharray: function(begin, end){
         this.begin = this.valueOf(begin);
         this.end = this.valueOf(end);
         if(this.circular){
@@ -133,12 +158,14 @@ Segment.prototype = {
         return val;
     },
 
-    stop : function(){
+    stop: function(){
+        window.cancelAnimationFrame(this.animationTimer);
+        this.animationTimer = null;
         clearTimeout(this.timer);
         this.timer = null;
     },
 
-    percent : function(value){
+    percent: function(value){
         return parseFloat(value) / 100 * this.length;
     }
 };

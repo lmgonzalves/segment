@@ -13,7 +13,7 @@ Read [this article](http://lmgonzalves.github.io/2015/10/26/animating-svg-path-s
 Add the segment script, and define a `path` somewhere.
 
 ```html
-<script src="https://cdnjs.cloudflare.com/ajax/libs/segment-js/1.0.6/segment.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/segment-js/1.0.7/segment.js"></script>
 
 <svg>
   <path id="my-path" ...>
