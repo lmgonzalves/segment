@@ -1,6 +1,6 @@
 /**
  * segment - A little JavaScript class (without dependencies) to draw and animate SVG path strokes
- * @version v1.0.7
+ * @version v1.0.8
  * @link https://github.com/lmgonzalves/segment
  * @license MIT
  */
@@ -91,12 +91,12 @@ Segment.prototype = {
                 that.end = that.end > that.length && !that.circular ? that.length : that.end;
 
                 if(that.end - that.begin <= that.length && that.end - that.begin > 0){
-                    that.draw(that.begin, that.end, 0, {circular: options.circular});
+                    that.draw(that.begin, that.end, 0, {circular: that.circular});
                 }else{
                     if(that.circular && that.end - that.begin > that.length){
-                        that.draw(0, that.length, 0, {circular: options.circular});
+                        that.draw(0, that.length, 0, {circular: that.circular});
                     }else{
-                        that.draw(that.begin + (that.end - that.begin), that.end - (that.end - that.begin), 0, {circular: options.circular});
+                        that.draw(that.begin + (that.end - that.begin), that.end - (that.end - that.begin), 0, {circular: that.circular});
                     }
                 }
 
