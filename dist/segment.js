@@ -36,7 +36,7 @@ function Segment(path, begin, end, circular){
     this.path.style.strokeDashoffset = this.length * 2;
     this.begin = typeof begin !== 'undefined' ? this.valueOf(begin) : 0;
     this.end = typeof end !== 'undefined' ? this.valueOf(end) : this.length;
-    this.circular = circular !== 'undefined' ? circular : false;
+    this.circular = typeof circular !== 'undefined' ? circular : false;
     this.timer = null;
     this.animationTimer = null;
     this.draw(this.begin, this.end, 0, {circular: this.circular});
