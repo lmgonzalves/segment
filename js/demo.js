@@ -13,13 +13,13 @@
         randomEnd;
 
     draw.onclick = function(){
-        segment.draw(begin.value, end.value, duration.value, {easing: ease.ease(easing.value)});
+        segment.draw(begin.value, end.value, duration.value, {easing: d3[easing.value]});
     };
 
     random.onclick = function(){
         randomBegin = getRandomInt(0, length);
         randomEnd = getRandomInt(0, length);
-        segment.draw(randomBegin, randomEnd, duration.value, {easing: ease.ease(easing.value)});
+        segment.draw(randomBegin, randomEnd, duration.value, {easing: d3[easing.value]});
     };
 
     function getRandomInt(min, max) {
