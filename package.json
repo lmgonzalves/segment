@@ -1,8 +1,8 @@
 {
   "name": "segment-js",
-  "version": "1.0.8",
-  "description": "A little JavaScript class (without dependencies) to draw and animate SVG path strokes",
-  "main": "dist/segment.node.js",
+  "version": "1.1.0",
+  "description": "A JavaScript library to draw and animate SVG path strokes",
+  "main": "dist/segment.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/lmgonzalves/segment.git"

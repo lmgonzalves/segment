@@ -13,7 +13,10 @@ gulp.task('serve', ['sass', 'dist'], function(){
     browserSync.init({
         server: {
             baseDir: "./"
-        }
+        },
+        open: false,
+        online: false,
+        notify: false
     });
 
     gulp.watch('scss/*.scss', ['sass']);
@@ -31,7 +34,7 @@ gulp.task('sass', function(){
             includePaths: ['scss'],
             onError: browserSync.notify
         }))
-        .pipe(prefix(['last 15 versions', '> 1%', 'ie 8', 'ie 7'], { cascade: true }))
+        .pipe(prefix(['last 5 versions'], {cascade: true}))
         .pipe(gulp.dest('css'))
         .pipe(browserSync.reload({stream:true}));
 });
@@ -40,12 +43,8 @@ gulp.task('sass', function(){
  * Create distributable versions
  */
 gulp.task('dist', function(){
-    gulp.src('dist/segment.js')
-        .pipe(rename({suffix: '.node'}))
-        .pipe(insert.append('\n\nmodule.exports = Segment;'))
-        .pipe(gulp.dest('dist'));
-
-    return gulp.src('dist/segment.js')
+    return gulp.src('js/segment.js')
+        .pipe(gulp.dest('dist'))
         .pipe(uglify({preserveComments: 'some'}))
         .pipe(rename({suffix: '.min'}))
         .pipe(gulp.dest('dist'))
