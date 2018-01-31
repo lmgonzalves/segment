@@ -1,6 +1,6 @@
 /**
  * segment - A JavaScript library to draw and animate SVG path strokes
- * @version v1.1.2
+ * @version v1.1.3
  * @link https://github.com/lmgonzalves/segment
  * @license MIT
  */
@@ -55,6 +55,7 @@
                 this.pausedTime = 0;
                 this.duration = duration;
                 this.easing = options && options.hasOwnProperty('easing') ? options.easing : null;
+                this.update = options && options.hasOwnProperty('update') ? options.update : null;
                 this.callback = options && options.hasOwnProperty('callback') ? options.callback : null;
 
                 this.animationTimer = requestAnimationFrame(this.play.bind(this));
@@ -128,6 +129,10 @@
                 } else {
                     this.draw(this.begin + (this.end - this.begin), this.end - (this.end - this.begin), 0, {circular: this.circular});
                 }
+            }
+
+            if(typeof this.update === 'function'){
+                this.update(this);
             }
         },
 
