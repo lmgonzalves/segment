@@ -4,7 +4,7 @@ A JavaScript library to draw and animate SVG path strokes.
 
 See the [DEMO](http://lmgonzalves.github.io/segment).
 
-Read [this article](http://lmgonzalves.github.io/2015/10/26/animating-svg-path-segments/) to understand how it works.
+Read [this article](https://web.archive.org/web/20201009154345/https://lmgonzalves.github.io/2015/10/26/animating-svg-path-segments/) to understand how it works.
 
 ## Basic usage
 
